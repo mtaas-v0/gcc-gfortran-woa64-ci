@@ -48,8 +48,14 @@ jobs:
         shell: msys2 {0}
         run: |
           # cd libgfortran
-          ./configure
-          make
+          configure \
+          --host=aarch64-w64-mingw32 \
+          --target=aarch64-w64-mingw32 \
+          --build=aarch64-w64-mingw32 \
+          --enable-languages=c,c++ \
+          --disable-bootstrap \
+          --disable-multilib
+          make MAKEINFO=missing STAGE1_CFLAGS="-D__USE_MINGW_ACCESS" all
       # 5. Example B: Upload a specific file with custom retention
       - name: Upload Build Dir
         uses: actions/upload-artifact@v7
