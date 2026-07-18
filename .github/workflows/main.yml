@@ -11,30 +11,35 @@ jobs:
   build:
     # Use the official GitHub-hosted native Windows 11 ARM64 runner
     runs-on: windows-11-arm
-
+    defaults:
+      run:
+        # Forces GitHub Actions to run commands inside the MSYS2 environment
+        shell: msys2 {0} 
+        
     steps:
       - name: Check out source code
         uses: actions/checkout@v4
 
-      - name: Set up LLVM-MinGW Toolchain
-        # Setting up LLVM-MinGW provides a drop-in substitute for GCC on Win-ARM64
+      - name: Setup MSYS2 CLANGARM64
         uses: msys2/setup-msys2@v2
         with:
+          msystem: CLANGARM64
           update: true
-          # clang-cl and llvm-mingw offer the best compilation support on Windows ARM64
+          # Packages to install: Toolchain + GCC wrappers
           install: >-
-            mingw-w64-clang-aarch64-cc
-            mingw-w64-clang-aarch64-cmake
-            mingw-w64-clang-aarch64-ninja
-            mingw-w64-clang-aarch64-gcc
-            mingw-w64-clang-aarch64-clang
+            mingw-w64-clang-aarch64-toolchain
+            mingw-w64-clang-aarch64-gcc-compat
+            make
+            git
 
       - name: Verify Compiler
-        shell: msys2 {0}
         run: |
-          gcc --version || clang --version
+          # These are actually clang wrappers, but accept standard GCC flags
+          gcc --version
+          g++ --version
           echo "Target Architecture:"
-          $CC -dumpmachine
+          gcc -dumpmachine
+          
 
       - name: Configure and Build
         shell: msys2 {0}
