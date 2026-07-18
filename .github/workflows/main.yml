@@ -29,6 +29,9 @@ jobs:
           install: >-
             mingw-w64-clang-aarch64-toolchain
             mingw-w64-clang-aarch64-gcc-compat
+            mingw-w64-clang-aarch64-gmp 
+            mingw-w64-clang-aarch64-mpfr 
+            mingw-w64-clang-aarch64-mpc
             make
             git
 
