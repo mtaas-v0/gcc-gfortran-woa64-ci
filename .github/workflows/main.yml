@@ -44,7 +44,7 @@ jobs:
       - name: Configure and Build
         shell: msys2 {0}
         run: |
-          cd libgfortran
+          # cd libgfortran
           ./configure
           make
       # 5. Example B: Upload a specific file with custom retention
