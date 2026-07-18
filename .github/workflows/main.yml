@@ -26,6 +26,8 @@ jobs:
             mingw-w64-clang-aarch64-cc
             mingw-w64-clang-aarch64-cmake
             mingw-w64-clang-aarch64-ninja
+            mingw-w64-clang-aarch64-gcc
+            mingw-w64-clang-aarch64-clang
 
       - name: Verify Compiler
         shell: msys2 {0}
