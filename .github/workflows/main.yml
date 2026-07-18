@@ -1,0 +1,48 @@
+name: Windows ARM64 GCC Build gfortran
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    # Use the official GitHub-hosted native Windows 11 ARM64 runner
+    runs-on: windows-11-arm
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Set up LLVM-MinGW Toolchain
+        # Setting up LLVM-MinGW provides a drop-in substitute for GCC on Win-ARM64
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          # clang-cl and llvm-mingw offer the best compilation support on Windows ARM64
+          install: >-
+            mingw-w64-clang-aarch64-cc
+            mingw-w64-clang-aarch64-cmake
+            mingw-w64-clang-aarch64-ninja
+
+      - name: Verify Compiler
+        shell: msys2 {0}
+        run: |
+          gcc --version || clang --version
+          echo "Target Architecture:"
+          $CC -dumpmachine
+
+      - name: Configure and Build
+        shell: msys2 {0}
+        run: |
+          cd libgfortran
+          ./configure
+          make
+      # 5. Example B: Upload a specific file with custom retention
+      - name: Upload Build Dir
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-dir-archive
+          path: ./
+          retention-days: 1
